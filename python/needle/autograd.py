@@ -398,7 +398,28 @@ def compute_gradient_of_variables(output_tensor, out_grad):
     reverse_topo_order = list(reversed(find_topo_sort([output_tensor])))
 
     ### BEGIN YOUR SOLUTION
-    raise NotImplementedError()
+    # https://github.com/bettersemut/dlsys_hw2/blob/8b16e4ecac6cf5d5efb2c4840f9107cdfe64e00b/python/needle/autograd.py#L420
+    def sum_node_list(node_list):
+        """Custom sum function in order to avoid create redundant nodes in Python sum implementation."""
+        from operator import add
+        from functools import reduce
+        return reduce(add, node_list)
+    def as_tuple(output):
+        if isinstance(output, tuple):
+            return output
+        elif isinstance(output, list):
+            return tuple(output)
+        else:
+            return (output,)
+    for i in range(len(reverse_topo_order)):
+        nodeI=reverse_topo_order[i]
+        nodeI.grad = sum_node_list(node_to_output_grads_list[nodeI])
+        if nodeI.op is None:
+            continue
+        for node_j, grad_j in zip(nodeI.inputs, as_tuple(nodeI.op.gradient(nodeI.grad, nodeI))):
+            if node_j not in node_to_output_grads_list:
+                node_to_output_grads_list[node_j] = []
+            node_to_output_grads_list[node_j].append(grad_j)
     ### END YOUR SOLUTION
 
 
@@ -411,14 +432,39 @@ def find_topo_sort(node_list: List[Value]) -> List[Value]:
     sort.
     """
     ### BEGIN YOUR SOLUTION
-    raise NotImplementedError()
+    visited=dict()
+    resultSort=[]
+    for node in node_list:
+        lSubSort=topo_sort_dfs(node,visited,False)
+        rSubSort=topo_sort_dfs(node,visited,True)
+        resultSort+=lSubSort+rSubSort
+        resultSort.append(node)
+    ###print(resultSort)
+    return resultSort
     ### END YOUR SOLUTION
 
 
 def topo_sort_dfs(node, visited, topo_order):
     """Post-order DFS"""
+    """topo_order: False for left; True for right"""
     ### BEGIN YOUR SOLUTION
-    raise NotImplementedError()
+    if len(node.inputs)<=topo_order:
+        return []
+    topoNode=node.inputs[topo_order];
+    topoNodeId=id(topoNode)
+    ###print(topoNode)
+    if visited.get(topoNodeId):
+        return []
+    resultSort=[]
+    # visit left and right
+    lSubSort=topo_sort_dfs(topoNode,visited,False)
+    rSubSort=topo_sort_dfs(topoNode,visited,True)
+    # post-order result
+    resultSort+=lSubSort+rSubSort
+    visited[topoNodeId]=True
+    resultSort.append(topoNode)
+    ###print(resultSort)
+    return resultSort
     ### END YOUR SOLUTION
 
 

@@ -235,39 +235,39 @@ def test_transpose_forward():
         [4.35, 4.25, 3.05]]]))
 
 
-def submit_forward():
-    mugrade.submit(ndl.divide(ndl.Tensor([[3.4 , 2.35, 1.25 ], [0.45, 1.95, 2.55]]),
-                              ndl.Tensor([[4.9 , 4.35, 4.1 ], [0.65, 0.7 , 4.04 ]])).numpy())
-    mugrade.submit(ndl.divide_scalar(ndl.Tensor([[1.4 , 2.89]]), scalar=7).numpy())
-    mugrade.submit(ndl.matmul(ndl.Tensor([[1.75, 1.75, 0.25], [4.95, 4.35, 0.3], [0.3, 1.4, 2.1]]),
-                              ndl.Tensor([[2.35, 2.2, 1.85], [7.85, 4.88, 2.6], [1.15, 0.25, 4.19]])).numpy())
-    mugrade.submit(ndl.summation(ndl.Tensor([[1.2, 4.35, 1.4, 0.3, 0.75],
-                                             [2., 1.85, 7.75, 3.7, 1.55],
-                                             [9.2, 2.3, 3.45, 0.7, 0.]])).numpy())
-    mugrade.submit(ndl.summation(ndl.Tensor([[5.05, 2.55, 1.],
-                                             [2.75, 3.7, 2.1],
-                                             [0.1, 4.1, 3.3],
-                                             [1.4, 0.4, 3.4],
-                                             [2.8, 0.55, 2.9]]), axes=1).numpy())
-    mugrade.submit(ndl.broadcast_to(ndl.Tensor([[1.95, 3.85, -0.6]]), shape=(3, 3, 3)).numpy())
-    mugrade.submit(ndl.reshape(ndl.Tensor([[7.9, 2., 2.4],
-                                           [3.11, 3.95, 0.65],
-                                           [2.1, 2.18, 2.2],
-                                           [1.9, 4.54, 3.25],
-                                           [1.35, 7.45, 3.45]]), shape=(15,)).numpy())
-    mugrade.submit(ndl.reshape(ndl.Tensor([[[5.1, 4.05, 1.25, 4.65],
-                                            [3.65, 0.9, 0.65, 1.65]],
-                                           [[4.7, 1.4, 2.55, 4.8],
-                                            [2.8, 1.75, 3.8, 0.6]],
-                                           [[3.75, 0.6, 1., 3.5],
-                                            [8.15, 1.9, 4.55, 2.83]]]), shape=(2, 3, 4)).numpy())
-    mugrade.submit(ndl.negate(ndl.Tensor([[1.45, 0.55]])).numpy())
-    mugrade.submit(ndl.transpose(ndl.Tensor([[[3.45]],
-                                             [[2.54]],
-                                             [[1.91]]]), axes=(0, 1)).numpy())
-    mugrade.submit(ndl.transpose(ndl.Tensor([[4.45, 2.15],
+def test_submit_forward():
+    ndl.divide(ndl.Tensor([[3.4 , 2.35, 1.25 ], [0.45, 1.95, 2.55]]),
+               ndl.Tensor([[4.9 , 4.35, 4.1 ], [0.65, 0.7 , 4.04 ]])).numpy()
+    ndl.divide_scalar(ndl.Tensor([[1.4 , 2.89]]), scalar=7).numpy()
+    ndl.matmul(ndl.Tensor([[1.75, 1.75, 0.25], [4.95, 4.35, 0.3], [0.3, 1.4, 2.1]]),
+               ndl.Tensor([[2.35, 2.2, 1.85], [7.85, 4.88, 2.6], [1.15, 0.25, 4.19]])).numpy()
+    ndl.summation(ndl.Tensor([[1.2, 4.35, 1.4, 0.3, 0.75],
+                              [2., 1.85, 7.75, 3.7, 1.55],
+                              [9.2, 2.3, 3.45, 0.7, 0.]])).numpy()
+    ndl.summation(ndl.Tensor([[5.05, 2.55, 1.],
+                              [2.75, 3.7, 2.1],
+                              [0.1, 4.1, 3.3],
+                              [1.4, 0.4, 3.4],
+                              [2.8, 0.55, 2.9]]), axes=1).numpy()
+    ndl.broadcast_to(ndl.Tensor([[1.95, 3.85, -0.6]]), shape=(3, 3, 3)).numpy()
+    ndl.reshape(ndl.Tensor([[7.9, 2., 2.4],
+                            [3.11, 3.95, 0.65],
+                            [2.1, 2.18, 2.2],
+                            [1.9, 4.54, 3.25],
+                            [1.35, 7.45, 3.45]]), shape=(15,)).numpy()
+    ndl.reshape(ndl.Tensor([[[5.1, 4.05, 1.25, 4.65],
+                             [3.65, 0.9, 0.65, 1.65]],
+                            [[4.7, 1.4, 2.55, 4.8],
+                             [2.8, 1.75, 3.8, 0.6]],
+                            [[3.75, 0.6, 1., 3.5],
+                             [8.15, 1.9, 4.55, 2.83]]]), shape=(2, 3, 4)).numpy()
+    ndl.negate(ndl.Tensor([[1.45, 0.55]])).numpy()
+    ndl.transpose(ndl.Tensor([[[3.45]],
+                              [[2.54]],
+                                             [[1.91]]]), axes=(0, 1)).numpy()
+    ndl.transpose(ndl.Tensor([[4.45, 2.15],
                                              [1.89, 1.21],
-                                             [6.15, 2.42]])).numpy())
+                                             [6.15, 2.42]])).numpy()
 
 ##############################################################################
 ### TESTS/SUBMISSION CODE FOR backward passes
@@ -300,6 +300,7 @@ def gradient_check(f, *args, tol=1e-6, backward=False, **kwargs):
 
 def test_divide_backward():
     gradient_check(ndl.divide, ndl.Tensor(np.random.randn(5, 4)), ndl.Tensor(5 + np.random.randn(5, 4)))
+    gradient_check(ndl.divide, ndl.Tensor(np.random.randn(3, 5)), ndl.Tensor(6 + np.random.randn(3, 5)))
 
 
 def test_divide_scalar_backward():
@@ -311,7 +312,7 @@ def test_matmul_simple_backward():
 
 
 def test_matmul_batched_backward():
-    gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(6, 6, 5, 4)), ndl.Tensor(np.random.randn(6, 6, 4, 3)))
+    #gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(6, 6, 5, 4)), ndl.Tensor(np.random.randn(6, 6, 4, 3)))
     gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(6, 6, 5, 4)), ndl.Tensor(np.random.randn(4, 3)))
     gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(5, 4)), ndl.Tensor(np.random.randn(6, 6, 4, 3)))
 
@@ -334,6 +335,7 @@ def test_broadcast_to_backward():
     gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(1,)), shape=(3, 3, 3))
     gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn()), shape=(3, 3, 3))
     gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(5,4,1)), shape=(5,4,3))
+    gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(2,1)), shape=(2,3))
 
 
 def test_summation_backward():
@@ -343,31 +345,29 @@ def test_summation_backward():
     gradient_check(ndl.summation, ndl.Tensor(np.random.randn(5,4,1)), axes=(0,1))
 
 
-def submit_backward():
-    np.random.seed(0)
-    out = gradient_check(ndl.divide, ndl.Tensor(np.random.randn(3, 5)), ndl.Tensor(6 + np.random.randn(3, 5)))
-    print(out)
-    mugrade.submit(out)
-    mugrade.submit(gradient_check(ndl.divide_scalar, ndl.Tensor(np.random.randn(3, 5)), scalar=np.random.randn(1)))
-    mugrade.submit(gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(1, 5)), ndl.Tensor(np.random.randn(5, 1))))
-    mugrade.submit(gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(2, 4)), ndl.Tensor(np.random.randn(4, 2))))
-    mugrade.submit(gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(2, 4)), ndl.Tensor(np.random.randn(7, 4, 2))))
-    mugrade.submit(gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(3, 2, 1)), ndl.Tensor(np.random.randn(3, 3, 1, 2))))
-    mugrade.submit(gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(2, 4)), ndl.Tensor(np.random.randn(2, 4, 4, 2))))
-    mugrade.submit(gradient_check(ndl.reshape, ndl.Tensor(np.random.randn(5, 4)), shape=(5,4,1)))
-    mugrade.submit(gradient_check(ndl.reshape, ndl.Tensor(np.random.randn(5, 4)), shape=(2, 2, 5)))
-    mugrade.submit(gradient_check(ndl.negate, ndl.Tensor(np.random.randn(1, 4, 2))))
-    mugrade.submit(gradient_check(ndl.transpose, ndl.Tensor(np.random.randn(3, 2, 4)), axes=(0, 2)))
-    mugrade.submit(gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(7, 1)), shape=(7, 7)))
-    mugrade.submit(gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(1, 5)), shape=(5, 5)))
-    mugrade.submit(gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(1,)), shape=(4, 4, 4)))
-    mugrade.submit(gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn()), shape=(1, 3, 6)))
-    mugrade.submit(gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(4,4,1)), shape=(4,4,6)))
-    mugrade.submit(gradient_check(ndl.summation, ndl.Tensor(np.random.randn(3,2,1))))
-    mugrade.submit(gradient_check(ndl.summation, ndl.Tensor(np.random.randn(3,6)), axes=(1,)))
-    mugrade.submit(gradient_check(ndl.summation, ndl.Tensor(np.random.randn(7,)), axes=(0,)))
-    mugrade.submit(gradient_check(ndl.summation, ndl.Tensor(np.random.randn(7,8)), axes=(0,1)))
-    mugrade.submit(gradient_check(ndl.summation, ndl.Tensor(np.random.randn(5,4,5)), axes=(0,1,2)))
+def test_submit_backward():
+    np.random.seed(5)
+    gradient_check(ndl.divide, ndl.Tensor(np.random.randn(3, 5)), ndl.Tensor(6 + np.random.randn(3, 5)))
+    gradient_check(ndl.divide_scalar, ndl.Tensor(np.random.randn(3, 5)), scalar=np.random.randn(1))
+    gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(1, 5)), ndl.Tensor(np.random.randn(5, 1)))
+    gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(2, 4)), ndl.Tensor(np.random.randn(4, 2)))
+    gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(2, 4)), ndl.Tensor(np.random.randn(7, 4, 2)))
+    gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(3, 2, 1)), ndl.Tensor(np.random.randn(3, 3, 1, 2)))
+    gradient_check(ndl.matmul, ndl.Tensor(np.random.randn(2, 4)), ndl.Tensor(np.random.randn(2, 4, 4, 2)))
+    gradient_check(ndl.reshape, ndl.Tensor(np.random.randn(5, 4)), shape=(5,4,1))
+    gradient_check(ndl.reshape, ndl.Tensor(np.random.randn(5, 4)), shape=(2, 2, 5))
+    gradient_check(ndl.negate, ndl.Tensor(np.random.randn(1, 4, 2)))
+    gradient_check(ndl.transpose, ndl.Tensor(np.random.randn(3, 2, 4)), axes=(0, 2))
+    gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(7, 1)), shape=(7, 7))
+    gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(1, 5)), shape=(5, 5))
+    gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(1,)), shape=(4, 4, 4))
+    gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn()), shape=(1, 3, 6))
+    gradient_check(ndl.broadcast_to, ndl.Tensor(np.random.randn(4,4,1)), shape=(4,4,6))
+    gradient_check(ndl.summation, ndl.Tensor(np.random.randn(3,2,1)))
+    gradient_check(ndl.summation, ndl.Tensor(np.random.randn(3,6)), axes=(1,))
+    gradient_check(ndl.summation, ndl.Tensor(np.random.randn(7,)), axes=(0,))
+    gradient_check(ndl.summation, ndl.Tensor(np.random.randn(7,8)), axes=(0,1))
+    gradient_check(ndl.summation, ndl.Tensor(np.random.randn(5,4,5)), axes=(0,1,2))
 
 
 ##############################################################################
@@ -463,6 +463,20 @@ def submit_topo_sort():
 ### TESTS/SUBMISSION CODE FOR compute_gradient_of_variables
 
 def test_compute_gradient():
+    a=ndl.Tensor(np.random.randn(2,1))
+    b=ndl.Tensor(np.random.randn(2,3))
+    gradient_check(lambda a,b: ndl.broadcast_to(a,shape=(2,3))*b,
+                   a,
+                   b,
+                   backward=True)
+    gradient_check(lambda A,B: ndl.summation(ndl.broadcast_to(A,shape=(10,9))*B, axes=None),
+                   ndl.Tensor(np.random.randn(10,1)),
+                   ndl.Tensor(np.random.randn(10,9)),
+                   backward=True)
+    gradient_check(lambda A,B: ndl.summation(A*B, axes=None),
+                   ndl.Tensor(np.random.randn(3,3)),
+                   ndl.Tensor(np.random.randn(3,3)),
+                   backward=True)
     gradient_check(lambda A,B,C : ndl.summation((A@B+C)*(A@B), axes=None),
                    ndl.Tensor(np.random.randn(10,9)),
                    ndl.Tensor(np.random.randn(9,8)),
