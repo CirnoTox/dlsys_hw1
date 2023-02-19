@@ -96,6 +96,8 @@ def nn_epoch(X, y, W1, W2, lr = 0.1, batch=100):
         loss.backward()
         W1-=lr*W1.grad
         W2-=lr*W2.grad
+        W1=W1.detach()
+        W2=W2.detach()
     return (W1,W2)
     ### END YOUR SOLUTION
 
